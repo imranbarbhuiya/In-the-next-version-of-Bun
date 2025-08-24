@@ -1,20 +1,20 @@
-import "./setup";
+import './setup';
 
 const formatSize = (bytes: number): string => {
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  let size = bytes;
-  let unitIndex = 0;
+	const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+	let size = bytes;
+	let unitIndex = 0;
 
-  while (size >= 1024 && unitIndex < units.length - 1) {
-    size /= 1024;
-    unitIndex++;
-  }
+	while (size >= 1024 && unitIndex < units.length - 1) {
+		size /= 1024;
+		unitIndex++;
+	}
 
-  return `${size.toFixed(1)}${units[unitIndex]}`;
+	return `${size.toFixed(1)}${units[unitIndex]}`;
 };
 
-const FOLDER = "./";
-const PATH_DEPTH = FOLDER.split("/").length;
+const FOLDER = './';
+const PATH_DEPTH = FOLDER.split('/').length;
 // your code - example du-like program, inline rust...
 const du = await Bun.Rust`
   // cargo-deps: walkdir = "2"
@@ -64,14 +64,10 @@ const val = du.unwrap<[string, number][]>();
 
 // formattign...
 const formattedEntries = val.reverse().map((v) => ({
-  path: v[0],
-  sizeStr: formatSize(v[1]),
+	path: v[0],
+	sizeStr: formatSize(v[1]),
 }));
 
 const maxSizeWidth = Math.max(...formattedEntries.map((e) => e.sizeStr.length));
 
-console.log(
-  formattedEntries
-    .map((v) => `${v.sizeStr.padEnd(maxSizeWidth)}  ${v.path}`)
-    .join("\n")
-);
+console.log(formattedEntries.map((v) => `${v.sizeStr.padEnd(maxSizeWidth)}  ${v.path}`).join('\n'));

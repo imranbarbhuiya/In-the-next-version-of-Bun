@@ -1,5 +1,4 @@
 import './setup';
-// ----------------------
 
 // const out = await Bun.Go(`
 //   for i := 1; i <= 3; i++ {

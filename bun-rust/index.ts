@@ -1,4 +1,4 @@
-import "./setup";
+import './setup';
 
 const out = await Bun.Rust`
 fn main() {

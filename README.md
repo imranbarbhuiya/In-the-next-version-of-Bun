@@ -1,15 +1,5 @@
-# in-the-next-version-of-bun
+# In the next version of bun
 
-To install dependencies:
+This repository contains fun experiments and examples of features from the memes tweeted by people for `In the next version of Bun`.
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.19. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+If you have built something cool like this, please open a PR to add here.
