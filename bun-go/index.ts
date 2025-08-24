@@ -25,12 +25,11 @@ import './setup';
 //   println("repeated:", strings.Repeat(s, 3))
 // `);
 
-const out = await Bun.Go(`
+const out = await Bun.Go`
 package main
 import "fmt"
 func main() {
     fmt.Println("Hello from Go!")
 }
-`);
-
+`;
 console.log(out);

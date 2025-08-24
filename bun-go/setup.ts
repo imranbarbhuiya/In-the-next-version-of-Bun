@@ -11,16 +11,23 @@ class GoError {
   }
 }
 
-export async function runYaegi(code: string) {
+export async function runYaegi(
+  codeOrStrings: string | TemplateStringsArray,
+  ...values: any[]
+) {
+  let code: string;
+  if (Array.isArray(codeOrStrings) && 'raw' in codeOrStrings) {
+    code = codeOrStrings.reduce(
+      (acc, str, i) => acc + str + (values[i] ?? ''),
+      ''
+    );
+  } else {
+    code = codeOrStrings as string;
+  }
   try {
     const wrapped = code.includes('func main()')
       ? code
-      : `package main
-import "time"
-func main() {
-${code}
-}
-`;
+      : `package main\nimport \"time\"\nfunc main() {\n${code}\n}\n`;
 
     // Fallback when go bin is not in PATH
     const pathToYaegi = Bun.which('yaegi') ? 'yaegi' : '~/go/bin/yaegi';
@@ -35,8 +42,7 @@ ${code}
       const stderr = e.stderr.toString();
       if (stderr.includes('command not found:'))
         throw new GoError(
-          `Yaegi is not installed. Please install it by running:
-  \`go install github.com/traefik/yaegi/cmd/yaegi@latest\``
+          `Yaegi is not installed. Please install it by running:\n  \`go install github.com/traefik/yaegi/cmd/yaegi@latest\``
         );
       throw new GoError(stderr);
     }
