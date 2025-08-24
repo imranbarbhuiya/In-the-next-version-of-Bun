@@ -19,10 +19,18 @@ import './setup';
 //   println("sum of 1..5 =", sum)
 // `);
 
+// const out = await Bun.Go(`
+//   s := "parbez"
+//   println("upper:", strings.ToUpper(s))
+//   println("repeated:", strings.Repeat(s, 3))
+// `);
+
 const out = await Bun.Go(`
-  s := "parbez"
-  println("upper:", strings.ToUpper(s))
-  println("repeated:", strings.Repeat(s, 3))
+package main
+import "fmt"
+func main() {
+    fmt.Println("Hello from Go!")
+}
 `);
 
 console.log(out);
