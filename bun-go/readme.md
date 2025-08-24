@@ -9,3 +9,5 @@ You will need to have [Yaegi](https://github.com/traefik/yaegi/) installed. You 
 ```sh
 go install github.com/traefik/yaegi/cmd/yaegi@latest
 ```
+
+Author: [@notparbez](https://x.com/notparbez)
