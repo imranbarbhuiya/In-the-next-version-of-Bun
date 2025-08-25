@@ -1,5 +1,5 @@
-import { mkdir } from 'fs/promises';
-import { join } from 'path';
+import { mkdir } from 'node:fs/promises';
+import { join } from 'node:path';
 
 const [, , packageName] = process.argv;
 if (!packageName) {
@@ -17,7 +17,7 @@ if (dirExists) {
 	process.exit(1);
 }
 
-await mkdir(newDir);
+await mkdir(newDir, { recursive: true });
 
 await Bun.write(join(newDir, 'tsconfig.json'), Bun.file(join(templateDir, 'tsconfig.json')));
 

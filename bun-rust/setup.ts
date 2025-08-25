@@ -1,7 +1,5 @@
-import { mkdirSync, existsSync } from 'node:fs';
+import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import os from 'node:os';
-import { createHash } from 'node:crypto';
 
 type RustError = {
 	stage: 'check' | 'compile' | 'run';
@@ -53,11 +51,13 @@ const RUSTC_CACHE_DIR = join(PROJECT_CACHE_DIR, 'rust');
 const CARGO_CACHE_DIR = join(PROJECT_CACHE_DIR, 'rust-cargo');
 
 function ensureDir(path: string) {
-	mkdirSync(path, { recursive: true });
+	return mkdir(path, { recursive: true });
 }
 
 function sha256(input: string): string {
-	return createHash('sha256').update(input).digest('hex');
+	const hasher = new Bun.CryptoHasher('sha256');
+	hasher.update(input);
+	return hasher.digest('hex');
 }
 
 function splitTopLevelCommaSeparated(input: string): string[] {
@@ -141,14 +141,6 @@ function prepareRustSource(userCode: string, useSerde: boolean): string {
 	);
 }
 
-function makeTmpDir(): string {
-	const base = os.tmpdir();
-	const id = globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2);
-	const dir = join(base, `bun-rust-${id}`);
-	mkdirSync(dir, { recursive: true });
-	return dir;
-}
-
 function extractDelimited(text: string, startMarker: string, endMarker: string): string | null {
 	const startIdx = text.indexOf(startMarker);
 	if (startIdx === -1) return null;
@@ -186,7 +178,7 @@ async function rust<T = unknown, E extends RustError = RustError>(
 		const cargoDepsLine = /\/\/\s*cargo-deps\s*:\s*(.*)/i.exec(userCode);
 		const isCargoMode = Boolean(cargoDepsLine);
 
-		ensureDir(PROJECT_CACHE_DIR);
+		await ensureDir(PROJECT_CACHE_DIR);
 
 		let runCmd: string[] | null = null;
 		let stdout = '';
@@ -221,10 +213,10 @@ async function rust<T = unknown, E extends RustError = RustError>(
 			const binName = 'snippet';
 			const binPath = join(targetDir, 'release', binName);
 
-			if (!existsSync(binPath)) {
-				ensureDir(CARGO_CACHE_DIR);
-				ensureDir(projDir);
-				ensureDir(srcDir);
+			if (!(await Bun.file(binPath).exists())) {
+				await ensureDir(CARGO_CACHE_DIR);
+				await ensureDir(projDir);
+				await ensureDir(srcDir);
 
 				const deps: string[] = splitTopLevelCommaSeparated(depsStr);
 				const depNames = new Set(
@@ -295,12 +287,12 @@ async function rust<T = unknown, E extends RustError = RustError>(
 			const sourceCode = prepareRustSource(userCode, false);
 			const hashKey = sha256(JSON.stringify({ mode: 'rustc', sourceCode }));
 			const outDir = join(RUSTC_CACHE_DIR, hashKey);
-			ensureDir(RUSTC_CACHE_DIR);
-			ensureDir(outDir);
+			await ensureDir(RUSTC_CACHE_DIR);
+			await ensureDir(outDir);
 			const srcPath = join(outDir, 'main.rs');
 			const binPath = join(outDir, 'main_bin');
 
-			if (!existsSync(binPath)) {
+			if (!(await Bun.file(binPath).exists())) {
 				await Bun.write(srcPath, sourceCode);
 				const compile = Bun.spawnSync({
 					cmd: [rustcPath, srcPath, '-o', binPath, '--edition', '2021'],

@@ -11,7 +11,7 @@ class GoError {
 	}
 }
 
-export async function runYaegi(codeOrStrings: string | TemplateStringsArray, ...values: unknown[]) {
+async function runYaegi(codeOrStrings: string | TemplateStringsArray, ...values: unknown[]) {
 	let code: string;
 	if (Array.isArray(codeOrStrings) && 'raw' in codeOrStrings) {
 		code = codeOrStrings.reduce((acc, str, i) => acc + str + (values[i] ?? ''), '');
