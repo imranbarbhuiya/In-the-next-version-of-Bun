@@ -1,10 +1,10 @@
 import './setup';
 
-// const out = await Bun.PHP(`
+// const out = await Bun.PHP`
 //   for ($i = 1; $i <= 3; $i++) {
 //     echo "tick $i " . date('h:i A') . "\n";
 //   }
-// `);
+// `;
 
 // const out = await Bun.PHP(`
 //   echo "hello from php ✨\n";

@@ -21,7 +21,13 @@ await mkdir(newDir, { recursive: true });
 
 await Bun.write(join(newDir, 'tsconfig.json'), Bun.file(join(templateDir, 'tsconfig.json')));
 
-await Bun.write(join(newDir, 'setup.ts'), '');
+const setupContent = await Bun.file(join(templateDir, 'setup.ts')).text();
+
+await Bun.write(
+	join(newDir, 'setup.ts'),
+	setupContent.replace(/Placeholder/g, packageName.split('-')[1]!.toUpperCase()),
+);
+
 await Bun.write(join(newDir, 'readme.md'), `# ${packageName}\n`);
 await Bun.write(join(newDir, 'index.ts'), `import './setup';\n`);
 
