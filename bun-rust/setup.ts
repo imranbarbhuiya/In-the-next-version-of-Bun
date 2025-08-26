@@ -164,7 +164,6 @@ async function rust<T = unknown, E extends RustError = RustError>(
 					stage: 'check',
 					message: 'rustc not found in PATH. Please install Rust (rustup)',
 				} as E,
-				// eslint-disable-next-line @typescript-eslint/no-throw-literal
 				unwrap: () => {
 					throw new Error('rustc not found in PATH.');
 				},
@@ -190,7 +189,6 @@ async function rust<T = unknown, E extends RustError = RustError>(
 				return {
 					ok: false,
 					error: { stage: 'check', message: 'cargo not found in PATH' } as E,
-					// eslint-disable-next-line @typescript-eslint/no-throw-literal
 					unwrap: () => {
 						throw new Error('cargo not found in PATH');
 					},
@@ -436,7 +434,6 @@ async function rust<T = unknown, E extends RustError = RustError>(
 		return {
 			ok: false,
 			error: error as E,
-			// eslint-disable-next-line @typescript-eslint/no-throw-literal
 			unwrap: () => {
 				throw error as unknown as Error;
 			},
