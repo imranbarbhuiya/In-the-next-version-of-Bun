@@ -1,5 +1,7 @@
 # Bun Go
 
+Demo tweet: https://x.com/notparbez/status/1959665328658559119
+
 Run inline go code in Bun. This is inspired by https://x.com/WolfYangFan/status/1959315842522300831 tweet.
 
 ![go example](./example.png)
